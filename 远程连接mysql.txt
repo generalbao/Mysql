@@ -1,0 +1,25 @@
+
+
+2016年11月22日17:11:35
+
+远程连接mysq
+
+1 在远程服务器上连接mysql
+
+mysql -u root -p
+然后输入密码
+
+
+2 insert into mysql.user(host,user,password) values('%','root',password('xxx'));          // % 表示任何ip都可以连接远程数据库
+
+3 flush privileges;
+
+
+4 ！！！！！别忘了开放 3306端口
+
+ iptables -I INPUT -p tcp --dprot 3306 -j ACCEPT
+
+ thank you for you visit!!!
+
+
+
