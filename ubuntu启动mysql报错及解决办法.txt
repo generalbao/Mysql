@@ -1,0 +1,8 @@
+2016年11月29日22:15:29
+
+
+service mysql start
+Can't connect to local MySQL server through socket '/usr/local/mysql/data/mysql.sock
+原来是因为mysql 的 data 目录 权限问题 
+
+当mysql server 启动的时，linux 会生成 mysql.sock，所以需要写的权限,当关闭mysql server时,mysql.sock会自动删除
