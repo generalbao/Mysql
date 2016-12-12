@@ -1,0 +1,12 @@
+2016年12月12日22:30:26
+
+当你有一个服务器
+但是绑定了很多个域名
+的时候,
+最好每一个域名对应一个user，
+这样比较安全,因为如果
+一个被攻击了,其他不会有太大影响
+
+create user 'xxx'@'%' identified by 'password'
+
+grant all on db.xxtables to 'xxx'@'localhost'
