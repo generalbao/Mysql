@@ -1,0 +1,15 @@
+2016年12月22日10:48:06
+
+1111 
+函数：FROM_UNIXTIME
+作用：将MYSQL中以INT(11)存储的时间以"YYYY-MM-DD"格式来显示。
+语法：FROM_UNIXTIME(unix_timestamp,format)
+
+返回表示 Unix 时间标记的一个字符串，根据format字符串格式化
+
+SELECT FROM_UNIXTIME(1234567890, '%Y-%m-%d %H:%i:%S')
+
+2222 
+期转换为UNIX时间戳用函数： UNIX_TIMESTAMP()
+Select UNIX_TIMESTAMP('2016-11-04 12:23:00'); 
+
