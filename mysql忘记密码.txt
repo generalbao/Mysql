@@ -1,0 +1,5 @@
+2016年12月31日13:31:30
+ 
+以命令行参数启动mysql： 
+/usr/bin/mysqld –-skip-grant-tables  这样就不用密码就可以登录mysql  如果已经启动就杀掉进程
+然后进入 mysql        update mysql.user set password=password('xxxx');
