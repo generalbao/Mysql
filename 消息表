@@ -1,0 +1,21 @@
+2017年1月16日15:57:04
+
+
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `state` enum('0','1') DEFAULT NULL, 状态 已读未读
+  `md_id` int(11) DEFAULT NULL,       消息详情表
+  `time` char(20) DEFAULT '---',
+ ) 
+ 
+ 
+CREATE TABLE `messagedetail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(30) DEFAULT NULL,
+  `content` varchar(300) DEFAULT '--',
+ 
+) 
+这样设置的好处是
+ 如果有很多 相同 的信息,信息内容又比较  大    比如 用户刚注册的时候 欢迎语
+ 你可以在 messagedetail 存一条 ,然后 message里面大家都可以用 
