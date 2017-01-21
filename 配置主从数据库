@@ -1,0 +1,84 @@
+2017年1月21日13:49:51
+
+大型网站为了软解大量的并发访问，除了在网站实现分布式负载均衡，远远不够。到了数据业务层、数据访问层，如果还是传统的数据结构，或者只是单单靠一台服务器扛，
+如此多的数据库连接操作，数据库必然会崩溃，数据丢失的话，后果更是 不堪设想。这时候，我们会考虑如何减少数据库的联接，一方面采用优秀的代码框架，
+进行代码的优化，采用优秀的数据缓存技术如：memcached,如果资金丰厚的话，必然会想到假设服务器群，来分担主数据库的压力。Ok切入今天微博主题
+利用MySQL主从配置，实现读写分离，减轻数据库压力
+
+主服务器（Master）负责网站NonQuery操作，从服务器负责Query操作，
+用户可以根据网站功能模特性块固定访问Slave服务器，或者自己写个池或队列，
+自由为请求分配从服务器连接。主从服务器利用MySQL的二进制日志文件，实现数据同步。二进制日志由主服务器产生，从服务器响应获取同步数据库。
+  
+  测试环境  三台centos7.0 虚拟机
+  A-----MASTER
+  B-----SLAVE
+  C-----SLAVE
+  
+  A,B,C 都直接 yum install mariadb mariadb-server -y 安装mysql
+  
+  
+ 
+ (一) 配置Master主服务器
+ 进入 A 
+   进入mysql
+  1 create user repl;
+   //repl用户必须具有REPLICATION SLAVE权限，除此之外没有必要添加不必要的权限，密码为mysql。说明一下192.168.0.%，这个配置是指明repl用户所在服务器，
+   //这里%是通配符，表示192.168.0.0-192.168.0.255的Server都可以以repl用户登陆主服务器。当然你也可以指定固定Ip。
+   GRANT REPLICATION SLAVE ON *.* TO 'repl'@'192.168.0.%' IDENTIFIED BY 'mysql';
+   
+  2 vim /etc/my.cnf   在[mysqld]加入下面语句 
+ server-id=1   //给数据库服务的唯一标识，一般为大家设置服务器Ip的末尾号
+ log-bin=master-bin
+ log-bin-index=master-bin.index
+ 
+ 3 重启mariadb   systemctl stop mariadb;systemctl start mariadb;
+ 
+ 4 查看日志     master-bin.000001非常重要！！！！！！从数据库就是根据这个来实现主从一致
+ SHOW MASTER STATUS;
+ +-------------------+----------+--------------+------------------+
+| File | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++-------------------+----------+--------------+------------------+
+| master-bin.000001 | 1285 | | |
++-------------------+----------+--------------+------------------+
+
+（二）配置从数据库
+  进入B C
+  vim /etc/my.conf
+  在[mysqld]下面增加下面几行代码
+ [mysqld]
+ server-id=2     //C的话就是3 或者其他可以标示的 方便管理就行
+ relay-log-index=slave-relay-bin.index
+ relay-log=slave-relay-bin 
+ 
+ 重启MySQL服务
+
+（2）连接Master
+
+change master to master_host='192.168.xx.xxx', //Master 服务器Ip
+master_port=3306,
+master_user='repl',
+master_password='mysql', 
+master_log_file='master-bin.000001',//Master服务器产生的日志        !!!
+master_log_pos=0;
+
+（3）启动Slave
+
+start slave;
+
+!!!!!!!!测试
+  在A 中 mysql 操作
+  crate database IamMaster;
+  
+  在B ,C 中 
+  show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| IamMaster          |           !!!!!!!
+| mysql              |
+| performance_schema |
+| test               |
++--------------------+
+  
+  
