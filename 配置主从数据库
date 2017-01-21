@@ -27,7 +27,7 @@
    GRANT REPLICATION SLAVE ON *.* TO 'repl'@'192.168.0.%' IDENTIFIED BY 'mysql';
    
   2 vim /etc/my.cnf   在[mysqld]加入下面语句 
- server-id=1   //给数据库服务的唯一标识，一般为大家设置服务器Ip的末尾号
+ server-id=1   //给数据库服务的唯一标识，一般为大家设置服务器Ip的末尾号  
  log-bin=master-bin
  log-bin-index=master-bin.index
  
@@ -80,5 +80,17 @@ start slave;
 | performance_schema |
 | test               |
 +--------------------+
+
+主从数据库配置要注意的是 
+1----server-id不可以省略或者设置为0 不然从数据库是无法连接到主数据库的
+2---- 为了最大限度的可持续性和容错,最好用innodb中的事物 还有 my.conf 设置 innodb_flush_log_at_trx_commit=1 sync_binlog=1
+3---- 主从数据库直接的网络连接很重要
+if you omit server-id (or set it explicitly to its default value of 0), the master refuses any connections from slaves.
+
+For the greatest possible durability and consistency in a replication setup using InnoDB with transactions, you should use 
+innodb_flush_log_at_trx_commit=1 and sync_binlog=1  in the master my.cnf file.
+
+Ensure that the skip-networking option is not enabled on your replication master. If networking has been disabled, 
+the slave cannot communicate with the master and replication fails.
   
   
