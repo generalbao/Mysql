@@ -1,0 +1,10 @@
+2017年1月21日13:59:02
+
+
+LAMP架构盛极一时，这离不开MySQL的免费与易用，但是在Oracle收购了Sun之后，很多公司开始担忧MySQL的开源前景，而最近Oracle进一步闭源的举措更是让人难以安心，
+众多互联网公司纷纷开始寻求MySQL的替代方案。
+不得不提的是Apple的远见，在Oracle收购Sun之初就宣布迁移到PostgreSQL。但PostgreSQL的设计初衷就不同于MySQL，并不是使用MySQL的大部分互联网公司合适
+的解决方案。除了Apple，Google、Facebook、Twitter也大量使用了MySQL，纷纷发布了自己的MySQL分支/补丁集，并为不少公司所采用。同时，MariaDB、Percona
+等MySQL分支也渐渐步入大众的视野。
+根据Wikipedia介绍，MariaDB是一个社区驱动的、采用XtraDb存储引擎的MySQL分支版本，由MySQL创始人Michael Widenius带领开发，遵循GPL v2.0协议开源。
+因为MySQL创始人的介入，MariaDB备受关注，Drupal、MediaWiki、phpMyAdmin、WordPress等众多应用都宣布支持MariaDB。
