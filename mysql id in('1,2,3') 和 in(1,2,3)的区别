@@ -1,0 +1,11 @@
+mysql id in('1,2,3') 和 in(1,2,3)的区别
+
+select * from tab where id in(1,2,3) 可以写成如下：
+
+select * from tab where find_in_set(id,'1,2,3')
+
+in('1,2,3')
+其实就是一个条件值'1,2,3'，即查找id为‘1,2,3’的;
+
+id in(1,2,3)
+则是多个（三个）条件值，即查找id分别为1、2、3的。
