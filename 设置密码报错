@@ -1,0 +1,32 @@
+Your password does not satisfy the current policy requirements   ？？？
+
+为什么报错呢？是因为不符合规则
+1 查看规则
+SHOW VARIABLES LIKE 'validate_password%';
+--------------------------------------+--------+
+| Variable_name                        | Value  |
++--------------------------------------+--------+
+| validate_password_dictionary_file    |        |
+| validate_password_length             | 8      |
+| validate_password_mixed_case_count   | 1      |
+| validate_password_number_count       | 1      |
+| validate_password_policy             | MEDIUM |
+| validate_password_special_char_count | 1      |
++--------------------------------------+--------+
+
+validate_password_policy有以下取值：
+0 or LOW	Length
+1 or MEDIUM	Length; numeric, lowercase/uppercase, and special characters
+2 or STRONG	Length; numeric, lowercase/uppercase, and special characters; dictionary file
+默认是1，即MEDIUM，所以刚开始设置的密码必须符合长度，且必须含有数字，小写或大写字母，特殊字符。
+
+有时候，只是为了自己测试，不想密码设置得那么复杂，譬如说，我只想设置root的密码为123456。
+
+必须修改两个全局参数：
+
+首先，修改validate_password_policy参数的值
+set global validate_password_policy=0;
+
+这样，判断密码的标准就基于密码的长度了。这个由validate_password_length参数来决定。
+select @@validate_password_length;
+8
