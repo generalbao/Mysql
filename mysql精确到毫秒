@@ -1,0 +1,27 @@
+条件：mysql5.6
+My.cnf中修改参数
+explicit_defaults_for_timestamp = 0
+且该字段需要精确到毫秒，而now()函数是不支持毫秒的。
+且建表时，只设置ts字段为timstamp类型，其他时间字段请用datetime类型，mysql只允许第一个timestamp类型的字段可以精确到毫秒。
+
+由此，需要建表的时候这样定义字段：
+create table presort_test(id int,ts timestamp(6) not null);
+然后在insert时不需要给ts字段赋值：
+insert into presort_test(id) values(3); 
+
+另外关于datetime & timestamp的区别如下：
+datetime 
+1. 占用8个字节 
+2. 允许为空值，可以自定义值，系统不会自动修改其值。 
+3. 实际格式储存（Just stores what you have stored and retrieves the same thing which you have stored.） 
+4. 与时区无关（It has nothing to deal with the TIMEZONE and Conversion.） 
+5. 不可以设定默认值，所以在不允许为空值的情况下，必须手动指定datetime字段的值才可以成功插入数据。 
+6. 可以在指定datetime字段的值的时候使用now()变量来自动插入系统的当前时间。 
+
+timestamp 
+1. 占用4个字节 
+2. 允许为空值，但是不可以自定义值，所以为空值时没有任何意义。 
+3. TIMESTAMP值不能早于1970或晚于2037。这说明一个日期，例如'1968-01-01'，虽然对于DATETIME或DATE值是有效的，但对于TIMESTAMP值却无效，如果分配给这样一个对象将被转换为0。 
+4.值以UTC格式保存（ it stores the number of milliseconds） 
+5.时区转化 ，存储时对当前的时区进行转换，检索时再转换回当前的时区。 
+6. 默认值为CURRENT_TIMESTAMP()，其实也就是当前的系统时间
